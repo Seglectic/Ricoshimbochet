@@ -1,0 +1,146 @@
+<!--
+  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  ┃                                                Ricoshimbochet                                                     ┃
+  ┃                                                                                                                   ┃
+  ┃                                           DVD screensaver simulacrum                                              ┃
+  ┃                                                                                                                   ┃
+  ┃                                                                                      - Seglectic Softworks 2021   ┃
+  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+-->
+
+<head>
+	<title>Ricoshimbochet</title>
+</head>
+
+<body>
+    
+    <div id=logo>
+        <img src="https://i.imgur.com/OnOlthv.png" id=logoImg>
+    </div>
+
+
+<!------------------------------------ Javascriptery ----------------------------------------------------------------->
+    <script>
+
+        var logo             = document.getElementById("logo")     // Container for moving logo content / whatnot
+        var logoImg          = document.getElementById("logoImg")  // Image tag in logo container
+        var speedLimit       = 2;                                  // Typical speed, bouncing aside
+        var slowBounce       = true;                               // Enforces speed limit when bouncing against a wall
+        var bFactor          = 1.5;                                // Velocity multiplier upon edge bounce
+        var bSpeed           = 3;                                  // Maximum bounce velocity that might be randomly incremented
+        logo.width           = logoImg.width                       
+        logo.height          = logoImg.height
+        //logo.width         = 200;                                // Container width    | Uncomment these to manually specify and resize image
+        //logo.height        = 150;                                // Container height   |            
+        logo.vx              = speedLimit*2;
+        logo.vy              = speedLimit*2;
+        logo.x               = document.body.clientWidth/2-(logo.width/2);
+        logo.y               = document.body.clientHeight/2-(logo.width/2);
+        logo.style.width     = logo.width;
+        logo.style.height    = logo.height;
+        logoImg.style.width  = logo.width;
+        logoImg.style.height = logo.height;
+
+        
+        //------------------------------- Helper functions ------------------------------------------------------------
+        // ┌───────────────────────┐
+        // │  Generate random int  │
+        // └───────────────────────┘
+        function RNG(min, max) {
+            var min = Math.ceil(min);
+            var max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // ┌────────────────────────────┐
+        // │  Generate random float(?)  │
+        // └────────────────────────────┘
+        function RNF(min, max){
+            return Math.random() * (max - min) + min;
+        } 
+        
+        // ┌─────────────────────────────────────────────┐
+        // │  Checks for general edge collision          │
+        // │  so full processing isn't done every frame  │
+        // └─────────────────────────────────────────────┘
+        function rebound(obj){
+            if( obj.x<0 ||
+                obj.y<0||
+                obj.x+obj.width>document.body.clientWidth ||
+                obj.y+obj.height>document.body.clientHeight){
+                obj.x = obj.px;
+                obj.y = obj.py;
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        // ┌────────────────────────────────────────────────────┐
+        // │  Constrain object to bounding zone and adjust vel  │
+        // └────────────────────────────────────────────────────┘
+        function constrainCollide(obj){
+            //Constrain it within bounds
+            if(obj.x<0){
+                obj.x=0;                                  // Keep object within bounding area
+                obj.vy+= RNF(-bSpeed,bSpeed);             // Add or remove random velocity to opposite axis
+                obj.vx *= -1;                             // Invert the velocity on collided axis
+            }
+            if(obj.x+obj.width>document.body.clientWidth){
+                obj.x=document.body.clientWidth-obj.width;
+                obj.vy+= RNF(-bSpeed,bSpeed);
+                obj.vx *= -1;
+            }
+            if(obj.y<0){
+                obj.y=0;
+                obj.vx+= RNF(-bSpeed,bSpeed);
+                obj.vy *= -1;
+            }
+            if(obj.y+obj.height>document.body.clientHeight){
+                obj.y=document.body.clientHeight-obj.height
+                obj.vx+= RNF(-bSpeed,bSpeed);
+                obj.vy *= -1;
+            }
+            //Multiply velocity for speed increase upon wall collision
+            if(slowBounce){
+                if(Math.abs(obj.vx)<speedLimit*2){obj.vx*=bFactor;}
+                if(Math.abs(obj.vy)<speedLimit*2){obj.vy*=bFactor;}
+            }
+
+        }
+
+
+        //------------------------------------------------------- Main Loop -------------------------------------------
+        function Ricoshimbochet(){ 
+            if(rebound(logo)){constrainCollide(logo);}
+            //Slow it down gradually if going too fast for a tween-effect on bounce
+            if(slowBounce){
+                if(logo.vx>speedLimit||logo.vx<-speedLimit){logo.vx+=(0-logo.vx)*0.01}
+                if(logo.vy>speedLimit||logo.vy<-speedLimit){logo.vy+=(0-logo.vy)*0.01}
+            }
+            //Speed it up if it's going too slow
+            logo.vx > 0 ? logo.vx+=(speedLimit-logo.vx)*0.02: logo.vx+=(-speedLimit-logo.vx)*0.05;
+            logo.vy > 0 ? logo.vy+=(speedLimit-logo.vy)*0.02: logo.vy+=(-speedLimit-logo.vy)*0.05;
+            //Apply velocity
+            logo.x+=logo.vx;
+            logo.y+=logo.vy;
+            //Apply positions
+            logo.style.top = logo.y
+            logo.style.left = logo.x;
+            logo.px = logo.x;
+            logo.py = logo.y;
+        }
+        setInterval(Ricoshimbochet,20)
+
+    </script>
+
+    <!-- ------------------------------------------------- CSS Styling ------------------------------------------------- -->
+
+    <style>
+        #logo{
+            /* background-color: black;  */             /* Uncomment this for testing I guess */
+            position: absolute;
+        }
+    </style>
+</body>
