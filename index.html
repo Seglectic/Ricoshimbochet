@@ -13,15 +13,12 @@
 </head>
 
 <body>
-
     <div id=logoDiv>
          <img id=logoImg src="./Duke.png"> <!-- Change this to whatever local image path you want -->
     </div>
 
-
 <!------------------------------------ Javascriptery ----------------------------------------------------------------->
     <script>
-
         setTimeout(()=>{                                               // Run after 200ms to prime image content (Hacky af)
             logo                 = document.getElementById("logoDiv")  // Container for moving logo content / whatnot
             logoImg              = document.getElementById("logoImg")  // Image tag in logo container
@@ -31,8 +28,8 @@
             logo.bSpeed          = 3;                                  // Maximum bounce velocity that might be randomly incremented
             logo.width           = logoImg.width
             logo.height          = logoImg.height
-            //logo.width         = 200;                                 // Container width   | Uncomment these to manually specify and resize image
-            //logo.height        = 150;                                 // Container height  | (Only necessary if your image is too big/smoll at standard pixel scale)           
+            //logo.width         = 200;                                // Container width   | Uncomment these to manually specify and resize image
+            //logo.height        = 150;                                // Container height  | (Only necessary if your image is too big/smoll at standard pixel scale)           
             logo.vx              = logo.speedLimit*2;
             logo.vy              = logo.speedLimit*2;
             logo.x               = document.body.clientWidth/2-(logo.width/2);
@@ -44,10 +41,6 @@
 
             setInterval(Ricoshimbochet,20)
         }, 200);
-
-
-
-
 
         
         //------------------------------- Helper functions ------------------------------------------------------------
@@ -115,7 +108,6 @@
                 if(Math.abs(obj.vx)<logo.speedLimit*2){obj.vx*=logo.bFactor;}
                 if(Math.abs(obj.vy)<logo.speedLimit*2){obj.vy*=logo.bFactor;}
             }
-
         }
 
 
@@ -139,8 +131,6 @@
             logo.px = logo.x;
             logo.py = logo.y;
         }
-        //Ricoshimbochet()
-
 
     </script>
 
